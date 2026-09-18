@@ -490,6 +490,17 @@ document.addEventListener('mouseout', e => {
   }
 });
 
+/* ---------- init ----------
+   ?theme= and ?palette= force a look without touching saved preferences,
+   so screenshots and visual checks are reproducible. */
+const qs = new URLSearchParams(location.search);
+if (qs.has('palette')) document.documentElement.dataset.palette = qs.get('palette');
+if (qs.has('theme')) {
+  document.documentElement.dataset.theme = qs.get('theme');
+  $('#theme-btn').innerHTML = icon(qs.get('theme') === 'dark' ? 'sun' : 'moon');
+}
+if (qs.get('chrome') === 'off') document.body.classList.add('no-motion');
+
 /* ---------- init ---------- */
 $('#search-keys').innerHTML = keys('mod+K');
 $('#search-btn').setAttribute('aria-label', `Search or jump to — press ${keysSpoken('mod+K')}`);

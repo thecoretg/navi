@@ -87,6 +87,18 @@ await naviAudit({ allPalettes: true });
 Zero failures is the bar, on every page, in both themes, across all six
 palettes. Run it before calling any UI change done.
 
+## Screenshots
+
+The README gallery is generated, not hand-captured:
+
+```bash
+./docs/capture-screenshots.sh
+```
+
+It drives headless Chrome against the demo. The demo reads `?theme=`,
+`?palette=` and `?chrome=off` (freezes entry animations) from the URL, so every
+shot is reproducible. Re-run it after any visual change that the README shows.
+
 ## Validating the plugin
 
 ```bash
