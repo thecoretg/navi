@@ -12,7 +12,7 @@
       "name": "navi-ui",
       "source": "./plugins/navi-ui",
       "description": "navi \u2014 a themeable admin/console design system: tokens, components, six palettes, and a readability audit.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "The Core TG"
       }
