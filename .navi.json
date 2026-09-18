@@ -1,0 +1,6 @@
+{
+  "palette": "harbor",
+  "css": "dashboard/assets/styles.css",
+  "adopted": "2026-09-17",
+  "note": "This repo is the reference implementation of the kit. The canonical copy lives in the navi-ui skill; keep them in sync."
+}
