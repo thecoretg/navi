@@ -2,10 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "dashboard",
+      "name": "demo",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4173", "--directory", "dashboard"],
-      "port": 4173
+      "runtimeArgs": ["-m", "http.server", "4173", "--directory", "plugins/navi-ui"],
+      "port": 4173,
+      "url": "http://localhost:4173"
     }
   ]
 }

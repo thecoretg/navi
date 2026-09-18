@@ -1,6 +1,6 @@
 {
   "palette": "harbor",
-  "css": "dashboard/assets/styles.css",
+  "css": "plugins/navi-ui/skills/navi-ui/assets/navi.css",
   "adopted": "2026-09-17",
-  "note": "This repo is the reference implementation of the kit. The canonical copy lives in the navi-ui skill; keep them in sync."
+  "note": "This repo is the kit itself. The path above is the single source of truth; there is no copy to keep in sync."
 }

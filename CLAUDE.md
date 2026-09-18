@@ -1,8 +1,23 @@
 # navi
 
-Reference implementation of the **navi UI kit** — a themeable admin/console
-design system. `dashboard/` is a zero-dependency demo console that exercises
-every component in the kit.
+navi is a themeable admin/console design system, shipped as a Claude Code
+plugin. This repo is both the **marketplace** and the **plugin source**.
+
+```
+.claude-plugin/marketplace.json     the marketplace (lists the plugin)
+plugins/navi-ui/
+  .claude-plugin/plugin.json        the plugin manifest
+  skills/navi-ui/                   the skill Claude loads
+    SKILL.md                        adoption flow + rules
+    assets/navi.css                 THE KIT — single source of truth
+    assets/{icons,charts}.js        optional dependency-free helpers
+    reference/*.md                  principles, components, palettes, checklist
+    scripts/contrast-audit.js       readability audit
+  demo/                             reference console using every component
+```
+
+There is no second copy of anything. `assets/navi.css` is the kit; the demo
+links to it directly.
 
 ## Frontend
 
@@ -11,6 +26,15 @@ styles, components, pages — invoke the `navi-ui` skill and follow it. Do not
 introduce other CSS frameworks, component libraries, raw hex colours or ad-hoc
 spacing values. The palette is recorded in `.navi.json`; do not change it
 without being asked.
+
+## Changing the kit
+
+1. Edit `plugins/navi-ui/skills/navi-ui/assets/navi.css`.
+2. If you add a component, document it in `reference/COMPONENTS.md`.
+3. Run the audit on the demo — zero failures, both themes, all six palettes.
+4. **Bump `version` in both manifests** (`plugin.json` and
+   `marketplace.json`) — they must match. Installed copies only update when
+   that string changes, so an unbumped change ships to nobody.
 
 ## Commits
 
@@ -41,37 +65,33 @@ Adds level and source filters to the log stream because the buffer was
 getting hard to read...
 ```
 
-## This repo is the source of truth for the kit
-
-`dashboard/assets/styles.css` is the kit. The skill at
-`~/.claude/skills/navi-ui/assets/navi.css` is a copy. **After changing the
-stylesheet here, copy it back:**
+## Running the demo
 
 ```bash
-cp dashboard/assets/styles.css ~/.claude/skills/navi-ui/assets/navi.css
+python3 -m http.server 4173 --directory plugins/navi-ui
 ```
 
-The same applies to `icons.js` and `charts.js`. If you add a component, also add
-it to `~/.claude/skills/navi-ui/reference/COMPONENTS.md`.
-
-## Running it
-
-```bash
-python3 -m http.server 4173 --directory dashboard
-```
-
-Then open http://localhost:4173. ES modules need a server; `file://` will not
-work.
+Then open http://localhost:4173/demo/. ES modules need a server; `file://`
+will not work.
 
 ## Auditing
 
-`dashboard/assets/audit.js` is a copy of the skill's readability audit. In the
-browser console:
+In the browser console on any demo page:
 
 ```js
-const s = await fetch('assets/audit.js').then(r => r.text()); (0, eval)(s);
+const s = await fetch('../skills/navi-ui/scripts/contrast-audit.js').then(r => r.text());
+(0, eval)(s);
 await naviAudit({ allPalettes: true });
 ```
 
 Zero failures is the bar, on every page, in both themes, across all six
 palettes. Run it before calling any UI change done.
+
+## Validating the plugin
+
+```bash
+claude plugin validate ./plugins/navi-ui   # plugin manifest
+claude plugin validate .                   # marketplace manifest
+```
+
+Both must pass before committing a manifest change.

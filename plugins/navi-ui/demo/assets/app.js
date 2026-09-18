@@ -1,7 +1,7 @@
-import { icon } from './icons.js';
+import { icon } from '../../skills/navi-ui/assets/icons.js';
 import * as D from './data.js';
 import { registry } from './pages.js';
-import { sparkline } from './charts.js';
+import { sparkline } from '../../skills/navi-ui/assets/charts.js';
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];

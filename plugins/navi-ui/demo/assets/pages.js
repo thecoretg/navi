@@ -1,6 +1,6 @@
-import { icon } from './icons.js';
+import { icon } from '../../skills/navi-ui/assets/icons.js';
 import * as D from './data.js';
-import { areaChart, barChart, donutChart, sparkline, rankBars } from './charts.js';
+import { areaChart, barChart, donutChart, sparkline, rankBars } from '../../skills/navi-ui/assets/charts.js';
 
 const { initials, money, compact, statusMeta, columnMeta } = D;
 

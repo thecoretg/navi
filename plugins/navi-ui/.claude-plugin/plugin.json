@@ -1,0 +1,23 @@
+{
+  "name": "navi-ui",
+  "displayName": "navi UI kit",
+  "version": "0.1.0",
+  "description": "navi — a themeable admin/console design system. Design tokens, ~40 component classes, six colour palettes in light and dark, and a readability audit. Use it for any frontend work in a project that has adopted navi.",
+  "author": {
+    "name": "The Core TG",
+    "url": "https://github.com/thecoretg"
+  },
+  "homepage": "https://github.com/thecoretg/navi",
+  "repository": "https://github.com/thecoretg/navi",
+  "license": "MIT",
+  "keywords": [
+    "design-system",
+    "ui",
+    "css",
+    "dashboard",
+    "admin",
+    "console",
+    "accessibility",
+    "theming"
+  ]
+}
