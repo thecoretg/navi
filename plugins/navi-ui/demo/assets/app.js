@@ -3,6 +3,8 @@ import * as D from './data.js';
 import { registry } from './pages.js';
 import { sparkline } from '../../skills/navi-ui/assets/charts.js';
 
+const qs = new URLSearchParams(location.search);
+
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
@@ -60,10 +62,26 @@ function route() {
   document.title = `${currentPage.title} · navi`;
 
   const view = $('#view');
-  view.innerHTML = currentPage.render(param);
-  view.scrollTop = 0;
-  window.scrollTo({ top: 0 });
-  currentPage.mount?.(view);
+  const paint = () => {
+    view.innerHTML = currentPage.render(param);
+    view.scrollTop = 0;
+    window.scrollTo({ top: 0 });
+    currentPage.mount?.(view);
+  };
+
+  /* ?rerender=on reproduces what a data-backed app does: draw a loading
+     skeleton, then replace it when the response lands. It is the pattern that
+     exposes an entry animation as too long or too movement-heavy. */
+  if (qs.get('rerender') === 'on') {
+    view.innerHTML = `<div class="card card-pad stack gap3">
+      <div class="skeleton" style="height:14px;width:34%"></div>
+      <div class="skeleton" style="height:9px"></div>
+      <div class="skeleton" style="height:9px;width:76%"></div>
+    </div>`;
+    setTimeout(paint, 70);
+  } else {
+    paint();
+  }
   app.classList.remove('nav-open');
   closeScrim();
 }
@@ -492,8 +510,8 @@ document.addEventListener('mouseout', e => {
 
 /* ---------- init ----------
    ?theme= and ?palette= force a look without touching saved preferences,
-   so screenshots and visual checks are reproducible. */
-const qs = new URLSearchParams(location.search);
+   so screenshots and visual checks are reproducible.
+   ?chrome=off freezes animation; ?rerender=on simulates a slow API. */
 if (qs.has('palette')) document.documentElement.dataset.palette = qs.get('palette');
 if (qs.has('theme')) {
   document.documentElement.dataset.theme = qs.get('theme');
