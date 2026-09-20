@@ -325,6 +325,12 @@ under the type select.
 
 Typeahead popup: `.typeahead-pop` inside a `.typeahead` container.
 
+`.cond` is a container query root, and so takes its width from its parent
+rather than its contents — it is `width: 100%` for that reason; do not remove
+it. Under 430px — a side panel, a `.dock`, a phone — each row stacks and the
+join moves to a line of its own. Same markup either way; do not write a narrow
+variant.
+
 ## Log stream
 
 ```html
