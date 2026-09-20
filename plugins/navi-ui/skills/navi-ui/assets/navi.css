@@ -821,6 +821,43 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: var(--text-base);
 [data-tip][data-tip-align="right"]::after { left: auto; right: 0; translate: 0 0; }
 [data-tip][data-tip-align="left"]::after  { left: 0; right: auto; translate: 0 0; }
 
+/* ---- panels docked over a canvas ----
+   A map, a flow editor or a chart pane wants its controls over the content
+   rather than beside it: the content keeps the full width and the panel is
+   dismissible. The parent needs `position: relative`. Set the width you want;
+   280px is only a starting point. */
+.dock {
+  position: absolute; z-index: 6; top: var(--s3); bottom: var(--s3);
+  width: 280px; display: flex; flex-direction: column; cursor: default;
+}
+.dock-l { left: var(--s3); }
+.dock-r { right: var(--s3); }
+.dock > .card {
+  display: flex; flex-direction: column; max-height: 100%; overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 93%, transparent);
+  backdrop-filter: blur(10px); box-shadow: var(--shadow-lg);
+}
+.dock > .card > .card-body { overflow: auto; min-height: 0; }
+
+/* the same chrome as a cluster rather than a panel: zoom controls, a collapsed
+   dock's tab, a line of status. Corner is one of .tl .tr .bl .br */
+.dock-bar {
+  position: absolute; z-index: 7; cursor: default;
+  display: flex; align-items: center; gap: var(--s1); padding: 3px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+  font-size: var(--text-xs); color: var(--ink-2);
+}
+.dock-bar.tl { left: var(--s3); top: var(--s3); }
+.dock-bar.tr { right: var(--s3); top: var(--s3); }
+.dock-bar.bl { left: var(--s3); bottom: var(--s3); }
+.dock-bar.br { right: var(--s3); bottom: var(--s3); }
+/* icon buttons sit flush; words need their own breathing room */
+.dock-bar .icon-btn { width: 26px; height: 26px; }
+.dock-bar > span { padding: 0 var(--s2); }
+
 /* ---------- 15. STATES ---------- */
 .empty { display: grid; place-items: center; text-align: center; padding: var(--s12) var(--s6); gap: var(--s4); }
 .empty-art {

@@ -702,6 +702,64 @@ export const components = {
       </div>
     `, 'Field → operator → value. The + opens a typeahead; chips are removable.')}
 
+    ${demo('Docked panels', `
+      <div style="position:relative;width:100%;height:352px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-sunken);background-image:radial-gradient(circle at 1px 1px, var(--line) 1.2px, transparent 0);background-size:22px 22px;overflow:hidden">
+        <aside class="dock dock-l" style="width:180px">
+          <article class="card">
+            <div class="card-head" style="padding:var(--s2) var(--s3)">
+              <div><h3 style="font-size:var(--text-sm)">Layers</h3></div>
+              <button class="icon-btn" aria-label="Hide the layer list">${icon('arrowL')}</button>
+            </div>
+            <div class="card-body" style="padding:var(--s3)">
+              <div class="stack gap3">
+                <label class="check"><input type="checkbox" checked><span class="box">${icon('check')}</span><span>Regions</span></label>
+                <label class="check"><input type="checkbox" checked><span class="box">${icon('check')}</span><span>Accounts</span></label>
+                <label class="check"><input type="checkbox"><span class="box">${icon('check')}</span><span>Heat map</span></label>
+              </div>
+            </div>
+          </article>
+        </aside>
+
+        <aside class="dock dock-r" style="width:300px">
+          <article class="card">
+            <div class="card-head">
+              <div><h3>Filter</h3><p>Accounts drawn on the map</p></div>
+              <button class="icon-btn" aria-label="Close the filter panel">${icon('x')}</button>
+            </div>
+            <div class="card-body">
+              <div class="cond">
+                <div class="cond-tabs"><button class="on">Builder</button><button>Advanced</button>
+                  <span class="grow"></span><span class="cell-sub">2</span></div>
+                <div class="cond-rows">
+                  <div class="cond-row">
+                    <span class="cond-join-spacer"></span>
+                    <select class="select"><option>Account status</option></select>
+                    <select class="select"><option>is</option></select>
+                    <input class="input" value="Past due" aria-label="Value">
+                    <button class="icon-btn" aria-label="Remove this condition">${icon('trash')}</button>
+                  </div>
+                  <div class="cond-row">
+                    <select class="cond-join" aria-label="Join"><option>and</option><option>or</option></select>
+                    <select class="select"><option>Plan</option></select>
+                    <select class="select"><option>is one of</option></select>
+                    <input class="input" value="Growth, Scale" aria-label="Value">
+                    <button class="icon-btn" aria-label="Remove this condition">${icon('trash')}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </aside>
+
+        <div class="dock-bar bl">
+          <button class="icon-btn" aria-label="Zoom out">${icon('minus')}</button>
+          <span class="num">75%</span>
+          <button class="icon-btn" aria-label="Zoom in">${icon('plus')}</button>
+        </div>
+        <div class="dock-bar br"><span>drag to pan</span></div>
+      </div>
+    `, 'The content keeps the full width and the panels float on it. The same condition builder as above, stacking itself at 300px.')}
+
     ${demo('Ordered cards', `
       <article class="rule-card" style="flex:1 1 340px">
         <div class="rule-head">

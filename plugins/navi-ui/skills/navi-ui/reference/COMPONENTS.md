@@ -189,6 +189,37 @@ Settings rows: `.form-row` — description left, control right.
 add `data-tip-pos="bottom"` near the top of the viewport (automatic inside
 `.topbar`), and `data-tip-align="left|right"` near a side edge.
 
+## Panels docked over a canvas
+
+For a map, a flow editor or any pane where the content should keep the full
+width and the controls float on top of it. The parent needs
+`position: relative`; set the width you want on `.dock`.
+
+```html
+<div class="canvas" style="position:relative">
+  …content…
+  <aside class="dock dock-l" style="width:190px">
+    <article class="card">
+      <div class="card-head"><div><h3>Steps</h3></div>
+        <button class="icon-btn" aria-label="Hide the step list"><!--arrow left--></button></div>
+      <div class="card-body">…</div>
+    </article>
+  </aside>
+
+  <div class="dock-bar bl">
+    <button class="icon-btn" aria-label="Zoom out"><!--minus--></button>
+    <span class="num">75%</span>
+    <button class="icon-btn" aria-label="Zoom in"><!--plus--></button>
+  </div>
+  <div class="dock-bar br"><span>drag to pan</span></div>
+</div>
+```
+
+`.dock-l` / `.dock-r` pick the side; `.dock-bar` takes a corner —
+`.tl .tr .bl .br`. A dock scrolls inside its own `.card-body`, so the card head
+and foot stay put. Show a dock only when it has something to say: an inspector
+with nothing selected is a column of nothing.
+
 ## Empty and loading
 
 ```html
