@@ -59,7 +59,10 @@ export function reorder(list, opts = {}) {
     if (from < 0) return;
 
     e.preventDefault();
-    if (handle.setPointerCapture) handle.setPointerCapture(e.pointerId);
+    /* capture keeps the gesture alive when the pointer leaves the handle, but it
+       is an enhancement: if it is refused, the listeners on the list still see
+       the move and the drop. Never let it abort the drag. */
+    try { handle.setPointerCapture?.(e.pointerId); } catch (_) {}
 
     const ir = item.getBoundingClientRect();
     const lr = list.getBoundingClientRect();
