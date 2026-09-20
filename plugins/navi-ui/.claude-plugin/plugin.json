@@ -1,7 +1,7 @@
 {
   "name": "navi-ui",
   "displayName": "navi UI kit",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "navi \u2014 a themeable admin/console design system. Design tokens, ~40 component classes, six colour palettes in light and dark, and a readability audit. Use it for any frontend work in a project that has adopted navi.",
   "author": {
     "name": "The Core TG",
