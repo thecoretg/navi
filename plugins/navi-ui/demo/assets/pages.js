@@ -1128,8 +1128,6 @@ const actionRow = (a, enabledCount) => `
     </div></div>` : ''}
   </div>`;
 
-const GRIP = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>`;
-
 /* A rule is collapsed to its head unless it carries .is-open: the summary is
    what the reader scans, the body is what they open to edit. */
 const ruleSummary = r => [
@@ -1141,7 +1139,7 @@ const ruleSummary = r => [
 const ruleCard = (r, i, total) => `
   <article class="rule-card ${r.enabled ? '' : 'is-disabled'} ${r.open ? 'is-open' : ''}">
     <div class="rule-head">
-      <button class="rule-grip" aria-label="Drag to reorder rule ${i + 1}">${GRIP}</button>
+      <button class="rule-grip" aria-label="Drag to reorder rule ${i + 1}">${icon('grip')}</button>
       <div class="order-btns">
         <button ${i === 0 ? 'disabled' : ''} aria-label="Move rule up">${icon('chevUp')}</button>
         <button ${i === total - 1 ? 'disabled' : ''} aria-label="Move rule down">${icon('chevDn')}</button>
