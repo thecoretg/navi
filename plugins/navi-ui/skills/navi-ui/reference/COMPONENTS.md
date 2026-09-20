@@ -220,6 +220,23 @@ width and the controls float on top of it. The parent needs
 and foot stay put. Show a dock only when it has something to say: an inspector
 with nothing selected is a column of nothing.
 
+## A pointer drag in progress
+
+Put `.is-dragging` on the shell for the length of the gesture, and take it off
+on pointer-up. It stops the drag turning into a text selection that runs through
+everything the pointer crosses, and gives every element under the pointer one
+cursor — the drag's own. Docked chrome stops taking pointer events, so a drag
+passes over a panel instead of ending on it.
+
+```html
+<div class="app is-dragging">…</div>           <!-- grabbing -->
+<div class="app is-dragging drag-link">…</div> <!-- crosshair: wiring something up -->
+<div class="app is-dragging drag-copy">…</div> <!-- copy: dragging a new item in -->
+```
+
+`assets/reorder.js` does not need this — it captures the pointer on a handle.
+Canvas-style drags, which have no single capture target, do.
+
 ## Empty and loading
 
 ```html

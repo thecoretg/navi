@@ -1122,6 +1122,21 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: var(--text-base);
   border-radius: 99px; background: var(--accent);
 }
 
+/* ---- a pointer drag in progress ----
+   Put .is-dragging on the shell for the length of the gesture. Without it the
+   drag starts a text selection that runs through everything the pointer passes
+   over, and every control it crosses shows its own cursor. `cursor` is set once
+   on the shell and inherited, so the modifier changes it everywhere at once;
+   the !important is what beats each control's own cursor, and is scoped to a
+   state that only exists mid-gesture. Docked chrome stops taking pointer events
+   so the drag passes over it instead of ending on it. */
+.is-dragging, .is-dragging * { user-select: none; -webkit-user-select: none; }
+.is-dragging { cursor: grabbing; }
+.is-dragging * { cursor: inherit !important; }
+.is-dragging.drag-link { cursor: crosshair; }
+.is-dragging.drag-copy { cursor: copy; }
+.is-dragging .dock, .is-dragging .dock-bar { pointer-events: none; }
+
 .order-btns { display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; }
 .order-btns button {
   position: relative; width: 24px; height: 17px; display: grid; place-items: center;
