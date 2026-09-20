@@ -1,6 +1,7 @@
 import { icon } from '../../skills/navi-ui/assets/icons.js';
 import * as D from './data.js';
 import { areaChart, barChart, donutChart, sparkline, rankBars } from '../../skills/navi-ui/assets/charts.js';
+import { reorder } from '../../skills/navi-ui/assets/reorder.js';
 
 const { initials, money, compact, statusMeta, columnMeta } = D;
 
@@ -1059,7 +1060,7 @@ const condRow = (c, ri, ci, join) => {
       ? `<span class="cond-join-spacer"></span>`
       : ci === 1
         ? `<select class="cond-join" data-join="${ri}"><option ${join === 'and' ? 'selected' : ''}>and</option><option ${join === 'or' ? 'selected' : ''}>or</option></select>`
-        : `<span class="cond-join-spacer" style="text-align:center;font-size:var(--text-xs);color:var(--faint)">${join}</span>`}
+        : `<span class="cond-join">${join}</span>`}
     <select class="select" style="min-width:150px" aria-label="Field">
       ${D.conditionFields.map(o => `<option value="${o.path}" ${o.path === c.path ? 'selected' : ''}>${o.label}</option>`).join('')}
     </select>
@@ -1118,18 +1119,29 @@ const actionRow = (a, enabledCount) => `
       ${D.actionKinds.map(([v, l]) => `<option value="${v}" ${v === a.kind ? 'selected' : ''}>${l}</option>`).join('')}
     </select>
     <input class="input" style="width:auto;height:30px;min-width:200px" value="${a.target}" aria-label="Action target">
-    ${a.flags.length || a.kind === 'note' ? `<div class="action-flags">
+    <label class="switch" style="margin-left:auto"><input type="checkbox" ${a.enabled ? 'checked' : ''}><span class="track"><span class="thumb"></span></span></label>
+    <button class="icon-btn" style="width:26px;height:26px" aria-label="Delete action" data-action="confirm-delete">${icon('trash')}</button>
+    ${a.flags.length || a.kind === 'note' ? `<div class="action-detail"><div class="action-flags">
       ${['discussion', 'internal', 'resolution'].map(f => `
         <label class="check"><input type="checkbox" ${a.flags.includes(f) ? 'checked' : ''}><span class="box">${icon('check')}</span>
         <span style="font-size:var(--text-xs);text-transform:capitalize">${f}</span></label>`).join('')}
-    </div>` : ''}
-    <label class="switch" style="margin-left:auto"><input type="checkbox" ${a.enabled ? 'checked' : ''}><span class="track"><span class="thumb"></span></span></label>
-    <button class="icon-btn" style="width:26px;height:26px" aria-label="Delete action" data-action="confirm-delete">${icon('trash')}</button>
+    </div></div>` : ''}
   </div>`;
 
+const GRIP = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>`;
+
+/* A rule is collapsed to its head unless it carries .is-open: the summary is
+   what the reader scans, the body is what they open to edit. */
+const ruleSummary = r => [
+  D.triggers.find(([v]) => v === r.trigger)?.[1] || r.trigger,
+  `${r.conditions.length || 'no'} condition${r.conditions.length === 1 ? '' : 's'}`,
+  `${r.actions.length} action${r.actions.length === 1 ? '' : 's'}`,
+].join(' · ');
+
 const ruleCard = (r, i, total) => `
-  <article class="rule-card ${r.enabled ? '' : 'is-disabled'}">
+  <article class="rule-card ${r.enabled ? '' : 'is-disabled'} ${r.open ? 'is-open' : ''}">
     <div class="rule-head">
+      <button class="rule-grip" aria-label="Drag to reorder rule ${i + 1}">${GRIP}</button>
       <div class="order-btns">
         <button ${i === 0 ? 'disabled' : ''} aria-label="Move rule up">${icon('chevUp')}</button>
         <button ${i === total - 1 ? 'disabled' : ''} aria-label="Move rule down">${icon('chevDn')}</button>
@@ -1137,8 +1149,10 @@ const ruleCard = (r, i, total) => `
       <span class="rule-index">${i + 1}</span>
       <input class="rule-name" value="${r.name}" aria-label="Rule name">
       ${r.stop ? '<span class="badge outline">stops chain</span>' : ''}
+      <span class="rule-sum cell-sub">${ruleSummary(r)}</span>
       <label class="switch" data-tip="Rule enabled"><input type="checkbox" ${r.enabled ? 'checked' : ''} data-action="toggle-rule"><span class="track"><span class="thumb"></span></span></label>
       <button class="btn btn-ghost btn-sm" data-action="confirm-delete">Delete</button>
+      <button class="rule-toggle icon-btn" data-action="toggle-rule-body" aria-expanded="${r.open ? 'true' : 'false'}" aria-label="${r.open ? 'Collapse' : 'Expand'} rule ${i + 1}">${icon('chevDn')}</button>
     </div>
     <div class="rule-body">
       <div class="grid g2" style="gap:var(--s4)">
@@ -1165,10 +1179,15 @@ const ruleCard = (r, i, total) => `
     </div>
   </article>`;
 
+let currentWf = null;
+
 export const automations = {
   title: 'Automations',
   render(id) {
     const wf = D.workflows.find(w => w.id === id);
+    currentWf = wf || null;
+    /* first rule open, the rest collapsed — the state a reader lands on */
+    wf?.rules.forEach((r, i) => { if (r.open === undefined) r.open = i === 0; });
     return wf ? this.detail(wf) : this.index();
   },
 
@@ -1265,7 +1284,7 @@ export const automations = {
       <p>Evaluated top to bottom on every matching change</p>
     </div>
     ${wf.rules.length
-      ? wf.rules.map((r, i) => ruleCard(r, i, wf.rules.length)).join('')
+      ? `<div class="rule-list">${wf.rules.map((r, i) => ruleCard(r, i, wf.rules.length)).join('')}</div>`
       : `<div class="card"><div class="empty">
           <div class="empty-art">${icon('bolt')}</div>
           <div class="stack gap2"><h3>No rules yet</h3><p>Add a rule to describe which records this automation should act on.</p></div>
@@ -1273,6 +1292,34 @@ export const automations = {
     <button class="btn btn-ghost btn-sm" style="margin-top:var(--s3)" data-action="toast" data-msg="Rule added">${icon('plus')} Add rule</button>`,
 
   mount(root) {
+    /* collapse / expand a rule */
+    root.addEventListener('click', e => {
+      const t = e.target.closest('[data-action="toggle-rule-body"]');
+      if (!t) return;
+      const card = t.closest('.rule-card');
+      const open = card.classList.toggle('is-open');
+      const n = card.querySelector('.rule-index')?.textContent || '';
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      t.setAttribute('aria-label', `${open ? 'Collapse' : 'Expand'} rule ${n}`);
+      const r = currentWf?.rules[Number(n) - 1];
+      if (r) r.open = open;
+    });
+
+    /* drag a rule to a new position: the helper reports the move, the page
+       reorders its own data and redraws the list. */
+    const list = root.querySelector('.rule-list');
+    if (list && currentWf) {
+      reorder(list, {
+        item: '.rule-card',
+        handle: '.rule-grip',
+        onMove: (from, to) => {
+          const rs = currentWf.rules;
+          rs.splice(to, 0, rs.splice(from, 1)[0]);
+          list.innerHTML = rs.map((r, i) => ruleCard(r, i, rs.length)).join('');
+        },
+      });
+    }
+
     /* typeahead popup for chip values */
     root.addEventListener('click', e => {
       const add = e.target.closest('[data-action="typeahead"]');

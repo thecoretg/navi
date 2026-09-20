@@ -177,6 +177,7 @@ export const workflows = [
         conditions: [
           { path: 'usage_pct', op: 'gt', value: '90' },
           { path: 'plan', op: 'in', values: ['Growth', 'Scale'] },
+          { path: 'status', op: 'eq', value: 'active' },
         ],
         actions: [
           { kind: 'notify', target: '#account-alerts', enabled: true, flags: ['internal'] },

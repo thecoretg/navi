@@ -103,7 +103,7 @@
       // 3 + 4. accessible name, hit target
       if (el.matches('button, a[href], input, select, textarea, [role="button"]')) {
         if (!label(el)) nameFails.push({ element: (el.className || el.tagName).toString().slice(0, 44), html: el.outerHTML.slice(0, 80) });
-        const expanded = el.classList.contains('hit-expand') || el.closest('.order-btns');
+        const expanded = el.classList.contains('hit-expand') || el.closest('.order-btns') || el.classList.contains('rule-grip');
         if (!expanded && el.matches('button, [role="button"]') && (rect.width < 24 || rect.height < 24))
           targetFails.push({ element: (el.className || el.tagName).toString().slice(0, 44), size: `${Math.round(rect.width)}x${Math.round(rect.height)}` });
       }

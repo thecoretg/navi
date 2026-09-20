@@ -217,24 +217,78 @@ elsewhere — and give the control an `aria-label` that spells it out
 
 ## Ordered rule cards
 
+An ordered chain, not a stack of forms. Cards sit in a `.rule-list`, a connector
+is drawn in the gap between them, and a card is **collapsed unless it carries
+`.is-open`** — the head alone says what the rule does, via `.rule-sum`.
+
 ```html
-<article class="rule-card is-disabled">
-  <div class="rule-head">
-    <div class="order-btns">
-      <button aria-label="Move rule up"><!--chevron up--></button>
-      <button aria-label="Move rule down"><!--chevron down--></button>
+<div class="rule-list">
+  <article class="rule-card is-open">
+    <div class="rule-head">
+      <button class="rule-grip" aria-label="Drag to reorder rule 1"><!--grip dots--></button>
+      <div class="order-btns">
+        <button aria-label="Move rule up"><!--chevron up--></button>
+        <button aria-label="Move rule down"><!--chevron down--></button>
+      </div>
+      <span class="rule-index">1</span>
+      <input class="rule-name" value="Rule name" aria-label="Rule name">
+      <span class="badge outline">stops chain</span>
+      <span class="rule-sum cell-sub">New and updated · 2 conditions · 1 action</span>
+      <label class="switch"><input type="checkbox"><span class="track"><span class="thumb"></span></span></label>
+      <button class="btn btn-ghost btn-sm">Delete</button>
+      <button class="rule-toggle icon-btn" aria-expanded="true" aria-label="Collapse rule 1"><!--chevron--></button>
     </div>
-    <span class="rule-index">1</span>
-    <input class="rule-name" value="Rule name" aria-label="Rule name">
-    <span class="badge outline">stops chain</span>
-    <label class="switch"><input type="checkbox"><span class="track"><span class="thumb"></span></span></label>
-    <button class="btn btn-ghost btn-sm">Delete</button>
-  </div>
-  <div class="rule-body">…</div>
-</article>
+    <div class="rule-body">…</div>
+  </article>
+  <article class="rule-card">…collapsed: no .is-open…</article>
+</div>
 ```
 
-`.action-row` is the nested equivalent for a rule's actions.
+| Class | What it is |
+|---|---|
+| `.rule-list` | The container. `position: relative` — the ghost and drop line live in it. |
+| `.is-open` | On the card. Without it the body is hidden and the head is the whole card. |
+| `.rule-sum` | One-line summary, shown only while the card is closed. |
+| `.rule-toggle` | Expand/collapse. Set `aria-expanded`; the chevron rotates on `.is-open`. |
+| `.rule-grip` | Drag handle. Keep `.order-btns` too — the grip is pointer-only. |
+| `.is-disabled` | Dims the card; independent of open/closed. |
+
+Dragging is `assets/reorder.js`, an optional dependency-free helper. It styles
+the lifted card `.is-source`, floats a `.drag-ghost` (a clone of the head) under
+the pointer and shows a `.drop-line` at the insertion point. It reports the move
+and never touches the DOM order itself:
+
+```js
+import { reorder } from './reorder.js'
+
+reorder(document.querySelector('.rule-list'), {
+  item: '.rule-card',
+  handle: '.rule-grip',
+  onMove: (from, to) => { /* reorder your data, re-render */ },
+})
+```
+
+`.action-row` is the nested equivalent for a rule's actions. An action whose
+fields need a second line — a message textarea, a row of flags — puts that
+content in a sibling `.action-detail`, not inside the field stack:
+
+```html
+<div class="action-row">
+  <div class="order-btns">…</div>
+  <label class="switch sm">…</label>
+  <select class="select" aria-label="Action type">…</select>
+  <select class="select" aria-label="Target">…</select>
+  <button class="icon-btn" aria-label="Remove action"><!--trash--></button>
+  <div class="action-detail">
+    <textarea class="textarea mono" aria-label="Custom message"></textarea>
+  </div>
+</div>
+```
+
+A taller child inside the field stack makes `align-items: center` centre the
+whole stack, which lifts the first field off the row's centre line.
+`.action-detail` is `flex-basis: 100%`, indented by `--action-indent` to start
+under the type select.
 
 ## Condition builder
 
@@ -252,6 +306,8 @@ elsewhere — and give the control an `aria-label` that spells it out
     </div>
     <div class="cond-row">
       <select class="cond-join" aria-label="Join"><option>and</option><option>or</option></select>
+      <!-- or, where the join is set once for the whole group: -->
+      <span class="cond-join">and</span>
       …
       <div class="chips typeahead">
         <span class="chip">Growth<button class="chip-x" aria-label="Remove Growth"><!--x--></button></span>
@@ -329,6 +385,10 @@ with `.tl-item`.
   <div><div class="eyebrow">MRR</div><div class="val num">$3,593</div></div>
 </div>
 ```
+
+The grid's hairlines are the container showing through a 1px gap, so the last
+cell spans whatever is left of its row — otherwise a count that does not fill
+the row leaves a bare strip of `--line` where the missing cells would be.
 
 ## Secrets
 
